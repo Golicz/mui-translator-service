@@ -42,6 +42,14 @@ class MUITranslator:
 
             # Zamień [/TagName] na </TagName>
             import re
+            # DODATKOWE CZYSZCZENIE dla plików .mui
+            file_content = file_content.replace('\x00', '')  # NULL bytes
+            file_content = file_content.replace('\r\n', '\n')  # Normalizuj końce linii
+            file_content = file_content.replace('\r', '\n')   # Mac line endings
+        
+            # Usuń ewentualne podwójne spacje i dziwne znaki
+            file_content = re.sub(r'\s+', ' ', file_content)  # Normalizuj spacje
+            file_content = file_content.strip()  # Usuń spacje na początku/końcu
             file_content = re.sub(r'\[/([^]]+)\]', r'</\1>', file_content)
 
             # Zamień [TagName] na <TagName> (jeśli potrzeba)
@@ -270,7 +278,6 @@ def translate_mui_file():
         translator = MUITranslator()
         
         # Krok 1: Parsowanie
-        logger.info("Rozpoczynam parsowanie pliku .mui")
         translatable_texts = translator.parse_mui_file(file_content)
         
         if not translatable_texts:
