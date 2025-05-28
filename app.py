@@ -223,8 +223,16 @@ def health_check():
 @app.route('/translate', methods=['POST'])
 def translate_mui_file():
     """Główny endpoint do tłumaczenia plików .mui"""
-    try:
-        # DEBUG: Sprawdź co otrzymujemy
+     try:
+        # FORCE DEBUG - sprawdź zawsze
+        logger.info("=== OTRZYMANY REQUEST ===")
+        logger.info(f"Method: {request.method}")
+        logger.info(f"Files keys: {list(request.files.keys())}")
+        logger.info(f"Form keys: {list(request.form.keys())}")
+        logger.info(f"Headers: {dict(request.headers)}")
+        logger.info("=== KONIEC DEBUG ===")
+        
+        # DEBUG: Sprawdź co otrzymujemy (stary kod)
         logger.info(f"Request method: {request.method}")
         logger.info(f"Request files: {list(request.files.keys())}")
         logger.info(f"Request form: {list(request.form.keys())}")
