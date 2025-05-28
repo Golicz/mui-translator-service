@@ -28,8 +28,15 @@ class MUITranslator:
         self.namespaces = {}
     
     def parse_mui_file(self, file_content):
-        """Parsuje plik .mui i wyodrębnia teksty do tłumaczenia"""
+    """Parsuje plik .mui i wyodrębnia teksty do tłumaczenia"""
         try:
+            # Usuń BOM jeśli istnieje
+            if file_content.startswith('\ufeff'):
+                file_content = file_content[1:]
+        
+            # Usuń inne problematyczne znaki BOM
+            file_content = file_content.replace('\ufeff', '')
+        
             # Obsługa namespace XML
             root = ET.fromstring(file_content)
             self.original_structure = file_content
