@@ -36,7 +36,20 @@ class MUITranslator:
         
             # Usuń inne problematyczne znaki BOM
             file_content = file_content.replace('\ufeff', '')
-        
+            # NOWA NAPRAWA: Konwersja niepoprawnych tagów XML
+            logger.info("Naprawiam niepoprawne tagi XML...")
+
+            # Zamień [/TagName] na </TagName>
+            import re
+            file_content = re.sub(r'\[/([^]]+)\]', r'</\1>', file_content)
+
+            # Zamień [TagName] na <TagName> (jeśli potrzeba)
+            file_content = re.sub(r'\[([^]/]+)\]', r'<\1>', file_content)
+
+            logger.info("Tagi XML naprawione")
+            logger.info(f"Pierwsze 300 znaków po naprawie: {file_content[:300]}")
+
+
             # Obsługa namespace XML
             root = ET.fromstring(file_content)
             self.original_structure = file_content
