@@ -223,7 +223,7 @@ def health_check():
 @app.route('/translate', methods=['POST'])
 def translate_mui_file():
     """Główny endpoint do tłumaczenia plików .mui"""
-     try:
+    try:
         # FORCE DEBUG - sprawdź zawsze
         logger.info("=== OTRZYMANY REQUEST ===")
         logger.info(f"Method: {request.method}")
@@ -325,7 +325,14 @@ def too_large(e):
 @app.errorhandler(500)
 def internal_error(e):
     return jsonify({"error": "Wewnętrzny błąd serwera"}), 500
-
+@app.route('/test-debug', methods=['POST', 'GET'])
+def test_debug():
+    """Test endpoint dla debug"""
+    logger.info("=== TEST DEBUG ENDPOINT HIT ===")
+    logger.info(f"Method: {request.method}")
+    logger.info(f"Files: {list(request.files.keys())}")
+    logger.info(f"Form: {list(request.form.keys())}")
+    return jsonify({"status": "test endpoint works", "method": request.method})
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
