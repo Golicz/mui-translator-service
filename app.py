@@ -59,6 +59,13 @@ class MUITranslator:
             file_content = re.sub(r'\[([^]/]+)\]', r'<\1>', file_content)
 
             logger.info("Tagi XML naprawione")
+
+            # DODATKOWE CZYSZCZENIE ZNAKÓW SPECJALNYCH
+            import unicodedata
+            file_content = ''.join(char for char in file_content if unicodedata.category(char)[0] != 'C' or char in '\n\t\r')
+
+            logger.info("Usunięto znaki kontrolne")
+            
             logger.info(f"Pierwsze 300 znaków po naprawie: {file_content[:300]}")
 
 
