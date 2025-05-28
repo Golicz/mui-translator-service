@@ -354,6 +354,50 @@ def test_debug():
     logger.info(f"Files: {list(request.files.keys())}")
     logger.info(f"Form: {list(request.form.keys())}")
     return jsonify({"status": "test endpoint works", "method": request.method})
+
+@app.route('/debug-file', methods=['POST'])
+def debug_file():
+    """Endpoint do debugowania - pokaże nam co faktycznie otrzymujemy"""
+    try:
+        logger.info("=== DEBUG FILE ENDPOINT URUCHOMIONY ===")
+        
+        # Sprawdź co otrzymujemy
+        logger.info(f"Request method: {request.method}")
+        logger.info(f"Request files keys: {list(request.files.keys())}")
+        logger.info(f"Request form keys: {list(request.form.keys())}")
+        logger.info(f"Content-Type: {request.content_type}")
+        
+        if 'file' not in request.files:
+            return jsonify({"error": "Brak pliku", "received_keys": list(request.files.keys())}), 400
+        
+        file = request.files['file']
+        logger.info(f"Nazwa pliku: {file.filename}")
+        
+        # Odczytaj surową zawartość
+        raw_content = file.read()
+        logger.info(f"Rozmiar pliku: {len(raw_content)} bajtów")
+        
+        # Spróbuj zdekodować jako UTF-8
+        try:
+            text_content = raw_content.decode('utf-8')
+            logger.info(f"Pierwsze 200 znaków UTF-8: {repr(text_content[:200])}")
+            logger.info(f"Ostatnie 100 znaków UTF-8: {repr(text_content[-100:])}")
+        except UnicodeDecodeError as e:
+            logger.info(f"Nie można zdekodować jako UTF-8: {e}")
+            logger.info(f"Pierwsze 50 bajtów (hex): {raw_content[:50].hex()}")
+        
+        return jsonify({
+            "status": "debug success",
+            "filename": file.filename,
+            "size_bytes": len(raw_content),
+            "first_50_bytes_hex": raw_content[:50].hex(),
+            "encoding_test": "see logs for details"
+        })
+        
+    except Exception as e:
+        logger.error(f"DEBUG ERROR: {e}")
+        return jsonify({"error": str(e)}), 500
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
