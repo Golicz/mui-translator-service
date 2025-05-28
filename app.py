@@ -28,7 +28,8 @@ class MUITranslator:
         self.namespaces = {}
     
     def parse_mui_file(self, file_content):
-    """Parsuje plik .mui i wyodrębnia teksty do tłumaczenia"""
+        """Parsuje plik .mui i wyodrębnia teksty do tłumaczenia"""
+        logger.info("=== FUNKCJA parse_mui_file URUCHOMIONA ===")  # DODAJ TĘ LINIĘ
         try:
             # Usuń BOM jeśli istnieje
             if file_content.startswith('\ufeff'):
