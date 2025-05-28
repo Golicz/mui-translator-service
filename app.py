@@ -224,6 +224,11 @@ def health_check():
 def translate_mui_file():
     """Główny endpoint do tłumaczenia plików .mui"""
     try:
+        # DEBUG: Sprawdź co otrzymujemy
+        logger.info(f"Request method: {request.method}")
+        logger.info(f"Request files: {list(request.files.keys())}")
+        logger.info(f"Request form: {list(request.form.keys())}")
+        
         # Sprawdź czy plik został przesłany
         if 'file' not in request.files:
             return jsonify({"error": "Brak pliku w żądaniu"}), 400
