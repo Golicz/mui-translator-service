@@ -47,9 +47,12 @@ class MUITranslator:
             file_content = file_content.replace('\r\n', '\n')  # Normalizuj końce linii
             file_content = file_content.replace('\r', '\n')   # Mac line endings
         
-            # Usuń ewentualne podwójne spacje i dziwne znaki
-            file_content = re.sub(r'\s+', ' ', file_content)  # Normalizuj spacje
-            file_content = file_content.strip()  # Usuń spacje na początku/końcu
+            # NAPRAWA KOŃCÓW LINII - kluczowe rozwiązanie!
+            file_content = file_content.replace('\r\n', '\n')  # Windows -> Unix
+            file_content = file_content.replace('\r', '\n')    # Mac -> Unix
+
+            # Usuń puste linie które mogą powodować problemy XML
+            file_content = '\n'.join(line for line in file_content.split('\n') if line.strip())
             file_content = re.sub(r'\[/([^]]+)\]', r'</\1>', file_content)
 
             # Zamień [TagName] na <TagName> (jeśli potrzeba)
